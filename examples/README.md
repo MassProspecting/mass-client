@@ -1,0 +1,1 @@
+Each new `mass-client.gem` released is stored here.

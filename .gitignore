@@ -1,0 +1,11 @@
+/examples/*.log
+/examples/*.html
+/examples/*.pem
+/examples/*.json
+
+/examples/data/*.log
+/examples/data/*.html
+/examples/data/*.pem
+/examples/data/*.json
+
+config.rb
