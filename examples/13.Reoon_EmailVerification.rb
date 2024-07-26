@@ -1,24 +1,6 @@
 # setup your MassProspecting API key to run these examples.
-
-# Use the following script to clear all enrichments done and start testing again:
-=begin
-update lead set email_verification_result=null where email_verification_result is not null;
-update lead set email=null where email is not null;
-delete from enrichment_screenshot;
-delete from enrichment_snapshot;
-delete from enrichment;
-=end
-
-require 'mysaas'
-require 'lib/stubs'
+require 'lib/mass-client'
 require 'config'
-require 'version'
-
-require 'extensions/mass.subaccount/lib/stubs'
-require 'extensions/mass.subaccount/main'
-
-BlackStack::Extensions.append :'mass.subaccount'
-
 l = BlackStack::LocalLogger.new('./examples.log')
 
 begin

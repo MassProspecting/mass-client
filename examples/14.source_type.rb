@@ -1,14 +1,6 @@
 # setup your MassProspecting API key to run these examples.
-require 'mysaas'
-require 'lib/stubs'
+require 'lib/mass-client'
 require 'config'
-require 'version'
-
-require 'extensions/mass.subaccount/lib/stubs'
-require 'extensions/mass.subaccount/main'
-
-BlackStack::Extensions.append :'mass.subaccount'
-
 l = BlackStack::LocalLogger.new('./examples.log')
 
 begin
