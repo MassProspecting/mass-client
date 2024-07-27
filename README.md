@@ -1,3 +1,6 @@
+
+**IMPORTANT:** This project is still under construction. Documentation is still a draft.
+
 <img src="./assets/logo.svg" alt="image" width="256" height="auto" />
 
 # Mass-Client
