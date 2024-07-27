@@ -1,6 +1,8 @@
 
 **IMPORTANT:** This project is still under construction. Documentation is still a draft.
 
+![Gem version](https://img.shields.io/gem/v/mass-client) ![Gem downloads](https://img.shields.io/gem/dt/mass-client)
+
 <img src="./assets/logo.svg" alt="image" width="256" height="auto" />
 
 # Mass-Client
