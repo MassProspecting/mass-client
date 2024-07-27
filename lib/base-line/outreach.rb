@@ -33,7 +33,7 @@ module Mass
         def child_class_instance
             outreach_type = self.desc['outreach_type']
             key = self.class_name_from_outreach_type
-            raise "Source code of outreach type #{outreach_type} not found. Create a class #{key} in the folder `/models/stub` and require it from `/lib/stubs`." unless Kernel.const_defined?(key)
+            raise "Source code of outreach type #{outreach_type} not found. Create a class #{key} in the folder `/lib` of your mass-sdk." unless Kernel.const_defined?(key)
             ret = Kernel.const_get(key).new(self.desc)
             return ret
         end

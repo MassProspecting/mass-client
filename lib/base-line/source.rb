@@ -23,7 +23,7 @@ module Mass
         def child_class_instance
             source_type = self.desc['source_type']
             key = self.class_name_from_source_type
-            raise "Source code of souurce type #{source_type} not found. Create a class #{key} in the folder `/models/stub` and require it from `/lib/stubs`." unless Kernel.const_defined?(key)
+            raise "Source code of souurce type #{source_type} not found. Create a class #{key} in the folder `/lib` of your mass-sdk." unless Kernel.const_defined?(key)
             ret = Kernel.const_get(key).new(self.desc)
             return ret
         end
