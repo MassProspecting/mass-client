@@ -8,7 +8,7 @@ begin
     Mass::Company.upsert({
         'name' => 'MassProspecting',
         'domain' => 'https://massprospecting.com',
-        'picture_url' => "file://home/leandro/code/mass/extensions/mass.subaccount/public/mass.subaccount/images/favicon.png",
+        'picture_url' => "file://./favicon.png",
         'country' => 'Uruguay',
         'timezone' => 'America/Argentina/Buenos_Aires',
         'tags' => ['testing'],  
