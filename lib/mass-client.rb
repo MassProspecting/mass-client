@@ -11,7 +11,7 @@ module Mass
     @@js_path
     @@drownload_path
 
-    def self.set(download_path: )
+    def self.set(js_path:, download_path:)
         # validate: download_path must be a string or an arrow of strings
         if download_path.is_a?(String)
             raise ArgumentError.new("The parameter 'download_path' must be a string or an array of strings.") if download_path.to_s.empty?

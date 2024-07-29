@@ -324,7 +324,7 @@ module Mass
                 # call ls command to get array of files in the folder
                 # iterate all the *.js files inside the folder $RUBYLIB/extensions/mass.subaccount/js
                 js2 = ''
-                filenames = `ls #{CODE_PATH}/extensions/mass.subaccount/js/*.js`.split("\n")
+                filenames = `ls #{Mass.js_path}/*.js`.split("\n")
                 filenames.each { |filename|
                     # Get the source code of the scraper
                     js2 += `cat #{filename}`
