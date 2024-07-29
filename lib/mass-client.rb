@@ -6,6 +6,36 @@ require 'simple_cloud_logging'
 require 'simple_command_line_parser'
 require 'colorize'
 
+# mass client configuration
+module Mass
+    @@js_path
+    @@drownload_path
+
+    def self.set(download_path: )
+        # validate: download_path must be a string or an arrow of strings
+        if download_path.is_a?(String)
+            raise ArgumentError.new("The parameter 'download_path' must be a string or an array of strings.") if download_path.to_s.empty?
+        elsif download_path.is_a?(Array)
+            download_path.each { |p|
+                raise ArgumentError.new("The parameter 'download_path' must be a string or an array of strings.") if p.to_s.empty?
+            }
+        else
+            raise ArgumentError.new("The parameter 'download_path' must be a string or an array of strings.")
+        end
+
+        @@js_path = js_path
+        @@download_path = download_path
+    end
+
+    def self.download_path
+        @@download_path
+    end
+
+    def self.js_path
+        @@js_path
+    end
+end # module Mass
+
 # base classes
 require_relative './/base-line/channel'
 
