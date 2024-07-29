@@ -23,7 +23,6 @@ module Mass
         def child_class_instance
             profile_type = self.desc['profile_type']
             key = self.class_name_from_profile_type
-binding.pry
             raise "Source code of profile type #{profile_type} not found. Create a class #{key} in the folder `/lib` of your mass-sdk." unless Kernel.const_defined?(key)
             ret = Kernel.const_get(key).new(self.desc)
             return ret
