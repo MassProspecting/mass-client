@@ -78,7 +78,8 @@ module Mass
 
                         # TODO: develop a normalization function for mail.message_id
                         message_id = envelope.message_id.to_s.gsub(/^</, '').gsub(/>$/, '')
-                        
+                        reply_to_message_id = envelope.in_reply_to.to_s.gsub(/^</, '').gsub(/>$/, '') # use this parameter to track a conversation thread
+
                         # if this is the first message, then remember it
                         last_message_id = message_id if last_message_id.nil?
 
@@ -90,6 +91,7 @@ module Mass
                         #    l.logf "Instantly warming email".red
                         else
                             lead_email = envelope.from[0].mailbox.to_s + '@' + envelope.from[0].host.to_s
+#binding.pry if lead_email == 'leandro@connectionsphere.com'
                             lead_name = envelope.from[0].name
                             subject = envelope.subject
                             body = imap.fetch(id, "BODY[]")[0].attr["BODY[]"]
@@ -120,6 +122,8 @@ module Mass
                                 # the content of the message
                                 'subject' => subject,
                                 'body' => body,
+                                'message_id' => message_id,
+                                'reply_to_message_id' => reply_to_message_id,
                             }
                             ret << h
 
