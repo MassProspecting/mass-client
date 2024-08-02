@@ -59,6 +59,8 @@ require_relative './/base-line/event'
 require_relative './/base-line/outreach'
 require_relative './/base-line/enrichment'
 
+require_relative './/base-line/unsubscribe'
+
 require_relative './/base-line/company'
 #require_relative './/base-line/company_data'
 #require_relative './/base-line/company_industry'
