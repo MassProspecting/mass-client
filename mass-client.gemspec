@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.9'
+    s.version     = '1.0.10'
     s.date        = '2024-08-02'
     s.summary     = "Ruby library for Mass API."
     s.description = "Ruby library for Mass API."
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
       'lib/base-line/lead.rb',
       'lib/base-line/location.rb',
       'lib/base-line/outreach.rb',
+      'lib/base-line/unsubscribe.rb',
       'lib/base-line/outreach_type.rb',
       'lib/base-line/profile.rb',
       'lib/base-line/profile_type.rb',
