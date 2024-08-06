@@ -42,6 +42,7 @@ module Mass
                 h_filters = {}
                 h_filters[field_2.to_s] = k[field_2]
                 lead = Mass::Lead.page(
+                    id_account: lead_descriptor['id_account'],
                     page: 1,
                     limit: 1,
                     filters: h_filters

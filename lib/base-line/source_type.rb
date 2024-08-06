@@ -9,6 +9,7 @@ module Mass
         def initialize(h={})
             super(h)
             self.profile_type = Mass::ProfileType.page(
+                id_account: h['id_account'],
                 page: 1,
                 limit: 1,
                 filters: {

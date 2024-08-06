@@ -13,6 +13,7 @@ module Mass
             self.lead = Mass::Lead.new(h['lead']) if h['lead']
             self.company = Mass::Company.new(h['company']) if h['company']
             self.profile_type = Mass::ProfileType.page(
+                id_account: h['id_account'],
                 page: 1,
                 limit: 1,
                 filters: {
