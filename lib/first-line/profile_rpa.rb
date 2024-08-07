@@ -156,7 +156,7 @@ module Mass
         ) 
             err = []
             err << "The status must be :allow or :block." if ![:allow, :block].include?(status)
-            err << "#{domain.to_s} is not a valid domain" if !domain.to_s.valid_domain?
+            err << "#{domain.to_s} is not a valid domain" if !domain.to_s.strip.downcase.valid_domain?
             raise err.join("\n") if err.size > 0
 
             site_url = secure ? "https://" : "http://"
