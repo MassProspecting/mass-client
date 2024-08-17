@@ -1,6 +1,4 @@
 
-**IMPORTANT:** This project is still under construction. Documentation is still a draft.
-
 ![Gem version](https://img.shields.io/gem/v/mass-client) ![Gem downloads](https://img.shields.io/gem/dt/mass-client)
 
 <img src="./assets/logo.svg" alt="image" width="256" height="auto" />
@@ -8,6 +6,37 @@
 # Mass-Client
 
 Ruby client for MassProspecting API
+
+## Table of Contents
+
+1. [Getting Started](#1-getting-started)
+
+   1.1. [Install Ruby Gem of MassProspecting](#11-install-ruby-gem-of-massprospecting)
+
+   1.2. [Setup the Client](#12-setup-the-client)
+
+   1.3. [Create Tags for Your Leads and Companies](#13-create-tags-for-your-leads-and-companies)
+
+   1.4. [Submit a Lead](#14-submit-a-lead)
+
+   1.5. [Channels](#15-channels)
+
+2. [CRM](#2-crm)
+
+   2.1. [Submit a Company](#21-submit-a-company)
+
+   2.2. [Assign Lead to a Company](#22-assign-lead-to-a-company)
+
+   2.3. [Custom Data Fields](#23-custom-data-fields)
+
+   2.4. [Industries](#24-industries)
+
+   2.5. [Headcounts](#25-headcounts)
+
+   2.6. [Revenues](#26-revenues)
+   
+3. [Advanded Client Setup](#3-advanded-client-setup)
+
 
 ## 1. Getting Started
 
@@ -313,3 +342,34 @@ Mass::Company.upsert({
 })
 ```
 
+## 3. Advanded Client Setup
+
+The **mass-client** accepts some custom configurations.
+
+**Example:**
+
+```ruby
+Mass.set(
+    # mandatory parameters
+    api_key: '4cb865f4-fa4f-4c2f-8456-d366de44e13a',
+    subaccount: 'MassProspecting',
+    # connect to development environment
+    api_url: 'http://127.0.0.1', 
+    api_port: 3000,
+    # optional parameters
+    backtrace: true,
+)
+```
+
+Here the full list of the parameters supported:
+
+| Parameter      | Type            | Mandatory | Default Value                     | Description                                                                                           |
+|----------------|-----------------|-----------|-----------------------------------|-------------------------------------------------------------------------------------------------------|
+| `api_key`      | `String`        | Yes       | N/A                               | The API key of your MassProspecting account.                                                           |
+| `subaccount`   | `String`        | Yes       | N/A                               | The name of the subaccount you want to work with.                                                      |
+| `api_url`      | `String`        | No        | `'https://massprospecting.com'`    | The URL of the MassProspecting API.                                                                    |
+| `api_port`     | `Integer`       | No        | `443`                             | The port of the MassProspecting API.                                                                   |
+| `api_version`  | `String`        | No        | `'1.0'`                           | The version of the MassProspecting API.                                                                |
+| `backtrace`    | `Boolean`       | No        | `false`                           | If `true`, the backtrace of the exceptions will be returned. If `false`, only an error description is returned. |
+| `js_path`      | `String, nil`   | No        | `nil`                             | The path to the JavaScript file to be used by the SDK.                                                 |
+| `download_path`| `String, Array` | No        | `[]`                              | The path to the download folder(s) to be used by the SDK. Must be a string or an array of strings.     |
