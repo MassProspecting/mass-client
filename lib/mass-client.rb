@@ -10,8 +10,56 @@ require 'colorize'
 module Mass
     @@js_path
     @@drownload_path
+    @@api_client
 
-    def self.set(js_path:, download_path:)
+    # set the MassProspecting API client
+    #
+    # Parameters:
+    #
+    # api_key: Mandatory. The API key of your MassProspecting account.
+    # subaccount: Mandatory. The name of the subaccount you want to work with.
+    # api_url: Optional. The URL of the MassProspecting API. Default is 'https://massprospecting.com'.
+    # api_port: Optional. The port of the MassProspecting API. Default is 443.
+    # api_version: Optional. The version of the MassProspecting API. Default is '1.0'.
+    # backtrace: Optional. If true, the backtrace of the exceptions will be returned by the access points. If false, only an error description is returned. Default is false.
+    # js_path: Optional. The path to the JavaScript file to be used by the SDK. Default is nil.
+    # download_path: Optional. The path to the download folder(s) to be used by the SDK. Default is [].
+    def self.set(
+        api_key:,
+        subaccount:,
+        api_url: 'https://massprospecting.com', 
+        api_port: 443,
+        api_version: '1.0',
+        backtrace: false,
+        js_path: nil, 
+        download_path: []
+    )
+        # call the master to get the URL and port of the subaccount.
+        BlackStack::API.set_client(
+            api_key: api_key,
+            api_url: api_url,
+            api_port: api_port,
+            api_version: api_version,
+            backtrace: backtrace
+        )
+
+        params = { 'name' => subaccount }
+        ret = BlackStack::API.post(
+            endpoint: "resolve/get",
+            params: params
+        )
+
+        raise "Error initializing client: #{ret['status']}" if ret['status'] != 'success'
+        
+        # call the master to get the URL and port of the subaccount.
+        BlackStack::API.set_client(
+            api_key: ret['api_key'],
+            api_url: ret['url'],
+            api_port: ret['port'],
+            api_version: api_version,
+            backtrace: backtrace
+        )
+
         # validate: download_path must be a string or an arrow of strings
         if download_path.is_a?(String)
             raise ArgumentError.new("The parameter 'download_path' must be a string or an array of strings.") if download_path.to_s.empty?

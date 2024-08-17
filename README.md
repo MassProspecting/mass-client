@@ -19,15 +19,17 @@ Follow the steps below to submit your first lead.
 gem install mass-client
 ```
 
-### 1.2. Setup Client
+### 1.2. Setup the Client
+
+1. Follow the steps in [this article](https://github.com/MassProspecting/docs/blob/main/api/1-getting-api-key.md) and get your MassProspecting API key.
+
+2. Setup your MassProspecting client.
 
 ```ruby
-BlackStack::API.set_client(
+require 'mass-client'
+
+Mass.set(
     api_key: '4db9d88c-dee9-****-8d36-********',
-    api_url: 'http://127.0.0.1',
-    api_port: 3000,
-    api_version: '1.0',
-    backtrace: false,
 )
 ```
 
