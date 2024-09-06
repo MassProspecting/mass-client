@@ -228,7 +228,7 @@ module Mass
                     break
                 end
             }
-            raise "The file #{filename} was not downloaded." if tmp_path.nil?
+            raise "Downloaded file #{filename} not found in paths #{tmp_paths.join(',')}." if tmp_path.nil?
 
             # upload the file to dropbox
             BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
