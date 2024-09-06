@@ -17,7 +17,7 @@ module Mass
     # Parameters:
     #
     # api_key: Mandatory. The API key of your MassProspecting account.
-    # subaccount: Mandatory. The name of the subaccount you want to work with.
+    # subaccount: Optional. The name of the subaccount you want to work with. If you provide a subaccount, the SDK will call the master to get the URL and port of the subaccount. Default is nil.
     # api_url: Optional. The URL of the MassProspecting API. Default is 'https://massprospecting.com'.
     # api_port: Optional. The port of the MassProspecting API. Default is 443.
     # api_version: Optional. The version of the MassProspecting API. Default is '1.0'.
@@ -25,8 +25,8 @@ module Mass
     # js_path: Optional. The path to the JavaScript file to be used by the SDK. Default is nil.
     # download_path: Optional. The path to the download folder(s) to be used by the SDK. Default is [].
     def self.set(
-        api_key:,
-        subaccount:,
+        api_key: ,
+        subaccount: nil,
         api_url: 'https://massprospecting.com', 
         api_port: 443,
         api_version: '1.0',
@@ -42,23 +42,25 @@ module Mass
             api_version: api_version,
             backtrace: backtrace
         )
-
-        params = { 'name' => subaccount }
-        ret = BlackStack::API.post(
-            endpoint: "resolve/get",
-            params: params
-        )
-
-        raise "Error initializing client: #{ret['status']}" if ret['status'] != 'success'
         
-        # call the master to get the URL and port of the subaccount.
-        BlackStack::API.set_client(
-            api_key: ret['api_key'],
-            api_url: ret['url'],
-            api_port: ret['port'],
-            api_version: api_version,
-            backtrace: backtrace
-        )
+        if subaccount
+            params = { 'name' => subaccount }
+            ret = BlackStack::API.post(
+                endpoint: "resolve/get",
+                params: params
+            )
+
+            raise "Error initializing client: #{ret['status']}" if ret['status'] != 'success'
+            
+            # call the master to get the URL and port of the subaccount.
+            BlackStack::API.set_client(
+                api_key: ret['api_key'],
+                api_url: ret['url'],
+                api_port: ret['port'],
+                api_version: api_version,
+                backtrace: backtrace
+            )
+        end
 
         # validate: download_path must be a string or an arrow of strings
         if download_path.is_a?(String)

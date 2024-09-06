@@ -91,7 +91,7 @@ module Mass
                         #    l.logf "Instantly warming email".red
                         else
                             lead_email = envelope.from[0].mailbox.to_s + '@' + envelope.from[0].host.to_s
-#binding.pry if lead_email == 'leandro@connectionsphere.com'
+                            
                             lead_name = envelope.from[0].name
                             subject = envelope.subject
                             body = imap.fetch(id, "BODY[]")[0].attr["BODY[]"]

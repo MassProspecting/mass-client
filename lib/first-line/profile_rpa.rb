@@ -210,6 +210,7 @@ module Mass
                 }
                 downloadImage('#{url}', '#{filename}')
             "
+#binding.pry
             driver.execute_script(js0)
 
             # code
