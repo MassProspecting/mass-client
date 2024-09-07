@@ -192,7 +192,7 @@ module Mass
             tmp_paths = Mass.download_path.map { |s| "#{s}/#{filename}" } if Mass.download_path.is_a?(Array)
 
             # excute JavaScript function downloadImage with the parameter src
-
+#binding.pry
             # this function is to download images from the same browser, using the proxy of the browser.
             # never download images from the server, because sites can track the IP.
             js0 = "
@@ -212,7 +212,7 @@ module Mass
             "
 #binding.pry
             driver.execute_script(js0)
-
+sleep(10)
             # code
             year = Time.now.year.to_s.rjust(4,'0')
             month = Time.now.month.to_s.rjust(2,'0')
