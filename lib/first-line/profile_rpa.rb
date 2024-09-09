@@ -195,6 +195,7 @@ module Mass
 #binding.pry
             # this function is to download images from the same browser, using the proxy of the browser.
             # never download images from the server, because sites can track the IP.
+=begin
             js0 = "
                 async function downloadImage(imageSrc, filename) {
                     const image = await fetch(imageSrc)
@@ -209,6 +210,32 @@ module Mass
                     document.body.removeChild(link)
                 }
                 downloadImage('#{url}', '#{filename}')
+            "
+=end
+            # Promise Handling: By returning a Promise in the JavaScript code, Selenium will wait for the asynchronous operation to complete.
+            # Reference: https://github.com/MassProspecting/docs/issues/253
+            js0 = "
+            function downloadImage(imageSrc, filename) {
+                return new Promise(async (resolve, reject) => {
+                    try {
+                        const image = await fetch(imageSrc);
+                        const imageBlob = await image.blob();
+                        const imageURL = URL.createObjectURL(imageBlob);
+        
+                        const link = document.createElement('a');
+                        link.href = imageURL;
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+        
+                        resolve('Download initiated');
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+            return downloadImage('#{url}', '#{filename}');
             "
 #binding.pry
             driver.execute_script(js0)
