@@ -239,6 +239,7 @@ module Mass
             "
 #binding.pry
             driver.execute_script(js0)
+# TODO: Remove this after fixed #253
 sleep(10)
             # code
             year = Time.now.year.to_s.rjust(4,'0')
