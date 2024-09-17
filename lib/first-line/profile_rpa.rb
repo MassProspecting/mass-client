@@ -195,22 +195,14 @@ module Mass
         # Parameters:
         # - url: Internet address of the image to download from the website and upload to dropbox.
         # - dropbox_folder: Dropbox folder name to store the image.
-        #        
+        #                
         def download_image_0(url, dropbox_folder = nil)
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
             
             # Parameters
             id = SecureRandom.uuid
-            filename = "#{id}.png"
-            tmp_paths = if Mass.download_path.is_a?(String)
-                            ["#{Mass.download_path}/#{filename}"]
-                        elsif Mass.download_path.is_a?(Array)
-                            Mass.download_path.map { |s| "#{s}/#{filename}" }
-                        else
-                            raise "Invalid Mass.download_path configuration."
-                        end
-        
+            
             # JavaScript to get base64 image data
             js0 = "
                 function getImageBase64(imageSrc) {
@@ -233,13 +225,35 @@ module Mass
                 }
                 return getImageBase64('#{url}');
             "
-binding.pry        
+            
             # Execute JavaScript and get base64 image data
             base64_image = driver.execute_script(js0)
             raise "Failed to retrieve image data from URL: #{url}" if base64_image.nil?
             
-            # Extract base64 data
-            image_data = base64_image.sub(/^data:image\/(png|jpeg);base64,/, '')
+            # Extract MIME type and base64 data
+            mime_type_match = base64_image.match(/^data:image\/([a-zA-Z0-9.+-]+);base64,/)
+            if mime_type_match
+                mime_subtype = mime_type_match[1] # e.g., 'png', 'jpeg', 'gif'
+                # Map common MIME subtypes to file extensions
+                extension = case mime_subtype
+                            when 'jpeg' then 'jpg'
+                            else mime_subtype
+                            end
+                # Remove the data URL prefix
+                image_data = base64_image.sub(/^data:image\/[a-zA-Z0-9.+-]+;base64,/, '')
+            else
+                raise "Unsupported or invalid image data format."
+            end
+            
+            # Update filename and paths
+            filename = "#{id}.#{extension}"
+            tmp_paths = if Mass.download_path.is_a?(String)
+                            ["#{Mass.download_path}/#{filename}"]
+                        elsif Mass.download_path.is_a?(Array)
+                            Mass.download_path.map { |s| "#{s}/#{filename}" }
+                        else
+                            raise "Invalid Mass.download_path configuration."
+                        end
             
             # Save the image to the first available path
             tmp_path = tmp_paths.find { |path| File.writable?(File.dirname(path)) }
@@ -262,8 +276,8 @@ binding.pry
             File.delete(tmp_path)
             # Return the URL of the file in Dropbox
             BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
-        end        
-        
+        end
+                
         # download image from Selenium using JavaScript and upload to Dropbox 
         # return the URL of the screenshot
         # 
