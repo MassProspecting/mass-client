@@ -91,7 +91,6 @@ module Mass
                         #    l.logf "Instantly warming email".red
                         else
                             lead_email = envelope.from[0].mailbox.to_s + '@' + envelope.from[0].host.to_s
-                            
                             lead_name = envelope.from[0].name
                             subject = envelope.subject
                             body = imap.fetch(id, "BODY[]")[0].attr["BODY[]"]
@@ -101,33 +100,38 @@ module Mass
                             #is_bounce = !rep.nil?
                             #bounce_reason = rep[0].reason if rep
                             #bounce_diagnosticcode = rep[0].diagnosticcode if rep
-            
-                            h = {
-                                # a scraped message is always a :performed message
-                                'status' => :performed,
-                                # what is the outreach type?
-                                # e.g.: :LinkedIn_DirectMessage
-                                # decide this in the child class.
-                                'outreach_type' => :GMail_DirectMessage,
-                                # hash descriptor of the profile who is scraping the inbox
-                                'profile' => p.desc,
-                                # hash descriptor of the lead who is the conversation partner
-                                'lead_or_company' => {
-                                  'name' => lead_name,
-                                  'email' => lead_email,
-                                },
-                                # if the message has been sent by the profile, it is :outgoing.
-                                # if the message has been sent by the lead, it is :incoming.
-                                'direction' => :incoming, 
-                                # the content of the message
-                                'subject' => subject,
-                                'body' => body,
-                                'message_id' => message_id,
-                                'reply_to_message_id' => reply_to_message_id,
-                            }
-                            ret << h
 
-                            l.logf "done".green
+                            if lead_name.nil?
+                                l.skip(details: "lead_name is nil")
+                            elsif lead_email.nil?
+                                l.skip(details: "lead_email is nil")
+                            else
+                                h = {
+                                    # a scraped message is always a :performed message
+                                    'status' => :performed,
+                                    # what is the outreach type?
+                                    # e.g.: :LinkedIn_DirectMessage
+                                    # decide this in the child class.
+                                    'outreach_type' => :GMail_DirectMessage,
+                                    # hash descriptor of the profile who is scraping the inbox
+                                    'profile' => p.desc,
+                                    # hash descriptor of the lead who is the conversation partner
+                                    'lead_or_company' => {
+                                    'name' => lead_name,
+                                    'email' => lead_email,
+                                    },
+                                    # if the message has been sent by the profile, it is :outgoing.
+                                    # if the message has been sent by the lead, it is :incoming.
+                                    'direction' => :incoming, 
+                                    # the content of the message
+                                    'subject' => subject,
+                                    'body' => body,
+                                    'message_id' => message_id,
+                                    'reply_to_message_id' => reply_to_message_id,
+                                }
+                                ret << h
+                                l.logf "done".green
+                            end
                         end                        
                     }
                     
