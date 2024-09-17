@@ -101,7 +101,7 @@ module Mass
 
         # stop the adspower server for headless mode, if it is not already stopped and if headless is activated.
         def self.clear_driver
-            self.class.buffer_driver = nil
+            self.buffer_driver = nil
         end
 
         # close all tabs except one
@@ -344,7 +344,7 @@ module Mass
 
             self.class.buffer_driver = nil if !c.check(self.desc['ads_power_id'])
             sleep(1)
-
+            
             if self.class.buffer_driver.nil?
                 self.class.buffer_driver = c.driver(self.desc['ads_power_id'], headless)
                 self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])
