@@ -175,97 +175,95 @@ module Mass
             automaticDownloads.find_element(:id => status.to_s).click()
         end # def automatic_downloads
 
+
+        def wait_for_file(file_paths, timeout = 30)
+            Timeout.timeout(timeout) do
+              loop do
+                file_paths.each do |path|
+                  return path if File.exist?(path)
+                end
+                sleep(1)
+              end
+            end
+        rescue Timeout::Error
+            raise "Downloaded file not found in paths #{file_paths.join(',')} after #{timeout} seconds."
+        end
+
         # download image from Selenium using JavaScript and upload to Dropbox 
         # return the URL of the screenshot
         # 
         # Parameters:
         # - url: Internet address of the image to download from the website and upload to dropbox.
         # - dropbox_folder: Dropbox folder name to store the image.
-        #
-        def download_image_0(url, dropbox_folder=nil)
+        #        
+        def download_image_0(url, dropbox_folder = nil)
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
-            # parameters
+            
+            # Parameters
             id = SecureRandom.uuid
             filename = "#{id}.png"
-            tmp_path = ["#{Mass.download_path}/#{filename}"] if Mass.download_path.is_a?(String)
-            tmp_paths = Mass.download_path.map { |s| "#{s}/#{filename}" } if Mass.download_path.is_a?(Array)
-
-            # excute JavaScript function downloadImage with the parameter src
-#binding.pry
-            # this function is to download images from the same browser, using the proxy of the browser.
-            # never download images from the server, because sites can track the IP.
-=begin
+            tmp_paths = if Mass.download_path.is_a?(String)
+                            ["#{Mass.download_path}/#{filename}"]
+                        elsif Mass.download_path.is_a?(Array)
+                            Mass.download_path.map { |s| "#{s}/#{filename}" }
+                        else
+                            raise "Invalid Mass.download_path configuration."
+                        end
+        
+            # JavaScript to get base64 image data
             js0 = "
-                async function downloadImage(imageSrc, filename) {
-                    const image = await fetch(imageSrc)
-                    const imageBlog = await image.blob()
-                    const imageURL = URL.createObjectURL(imageBlog)
-                  
-                    const link = document.createElement('a')
-                    link.href = imageURL
-                    link.download = filename
-                    document.body.appendChild(link)
-                    link.click()
-                    document.body.removeChild(link)
-                }
-                downloadImage('#{url}', '#{filename}')
-            "
-=end
-            # Promise Handling: By returning a Promise in the JavaScript code, Selenium will wait for the asynchronous operation to complete.
-            # Reference: https://github.com/MassProspecting/docs/issues/253
-            js0 = "
-            function downloadImage(imageSrc, filename) {
+                function getImageBase64(imageSrc) {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const image = await fetch(imageSrc);
-                        const imageBlob = await image.blob();
-                        const imageURL = URL.createObjectURL(imageBlob);
-        
-                        const link = document.createElement('a');
-                        link.href = imageURL;
-                        link.download = filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-        
-                        resolve('Download initiated');
-                    } catch (error) {
+                    const response = await fetch(imageSrc);
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+                    reader.onloadend = function() {
+                        resolve(reader.result);
+                    };
+                    reader.onerror = function(error) {
                         reject(error);
+                    };
+                    reader.readAsDataURL(blob);
+                    } catch (error) {
+                    reject(error);
                     }
                 });
-            }
-            return downloadImage('#{url}', '#{filename}');
+                }
+                return getImageBase64('#{url}');
             "
-#binding.pry
-            driver.execute_script(js0)
-# TODO: Remove this after fixed #253
-sleep(10)
-            # code
-            year = Time.now.year.to_s.rjust(4,'0')
-            month = Time.now.month.to_s.rjust(2,'0')
+binding.pry        
+            # Execute JavaScript and get base64 image data
+            base64_image = driver.execute_script(js0)
+            raise "Failed to retrieve image data from URL: #{url}" if base64_image.nil?
+            
+            # Extract base64 data
+            image_data = base64_image.sub(/^data:image\/(png|jpeg);base64,/, '')
+            
+            # Save the image to the first available path
+            tmp_path = tmp_paths.find { |path| File.writable?(File.dirname(path)) }
+            raise "No writable path found in #{tmp_paths.join(', ')}." if tmp_path.nil?
+            
+            File.open(tmp_path, 'wb') do |file|
+                file.write(Base64.decode64(image_data))
+            end
+            
+            # Proceed with Dropbox operations
+            year = Time.now.year.to_s.rjust(4, '0')
+            month = Time.now.month.to_s.rjust(2, '0')
             folder = "/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
             BlackStack::DropBox.dropbox_create_folder(folder)
-
-            # find the tmp_path that exists
-            tmp_path = nil
-            tmp_paths.each { |s|
-                if File.exist?(s)
-                    tmp_path = s
-                    break
-                end
-            }
-            raise "Downloaded file #{filename} not found in paths #{tmp_paths.join(',')}." if tmp_path.nil?
-
-            # upload the file to dropbox
+            
+            # Upload the file to Dropbox
             BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
-            # delete the file
+            # Delete the local file
             File.delete(tmp_path)
-            # return the URL of the file in dropbox
+            # Return the URL of the file in Dropbox
             BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
-        end # def download_image_0
-
+        end        
+        
         # download image from Selenium using JavaScript and upload to Dropbox 
         # return the URL of the screenshot
         # 

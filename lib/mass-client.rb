@@ -5,6 +5,8 @@ require 'blackstack-core'
 require 'simple_cloud_logging'
 require 'simple_command_line_parser'
 require 'colorize'
+require 'timeout'
+require 'base64'
 
 # mass client configuration
 module Mass
