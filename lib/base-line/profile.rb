@@ -101,7 +101,7 @@ module Mass
         #
         def connectioncheck(limit: 100, logger:nil)
             []
-        end # def inboxcheck
+        end # def connectioncheck
 
     end # class Profile
 end # module Mass
