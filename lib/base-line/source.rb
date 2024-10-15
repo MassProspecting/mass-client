@@ -113,7 +113,7 @@ module Mass
 
                 # screenshot
                 l.logs 'Screenshot... '
-                job.desc['screenshots'] << job.profile.screenshot
+                job.desc['screenshots'] << job.profile.screenshot if job.profile.desc['allow_browser_to_download_multiple_files']
                 l.logf 'done'.green + " (#{job.desc['screenshots'].size.to_s.blue} total)"
               end
         end
