@@ -175,7 +175,23 @@ module Mass
             automaticDownloads.find_element(:id => status.to_s).click()
         end # def automatic_downloads
 
-
+        # Waits for the presence of a file in specified file paths within a given timeout period.
+        # This function checks each file path in the provided array and returns the path of the
+        # first file it finds to exist. It raises an exception if none of the files are found
+        # within the specified timeout.
+        #
+        # @param file_paths [Array<String>] An array of file paths to check for the file's existence.
+        # @param timeout [Integer] The maximum number of seconds to wait for the file to appear.
+        #                          Default is 30 seconds.
+        #
+        # @return [String] The path of the first file found in `file_paths`.
+        # @raise [RuntimeError] If no file is found within the specified timeout, raises an error with a message 
+        #                       listing the paths that were checked and the timeout duration.
+        #
+        # @example
+        #   wait_for_file(['/path/to/file1', '/path/to/file2'], timeout: 60)
+        #   # => "/path/to/file1" (if the file appears within 60 seconds)
+        #
         def wait_for_file(file_paths, timeout = 30)
             Timeout.timeout(timeout) do
               loop do
@@ -187,6 +203,45 @@ module Mass
             end
         rescue Timeout::Error
             raise "Downloaded file not found in paths #{file_paths.join(',')} after #{timeout} seconds."
+        end
+
+
+        # Retrieves the URL of a file stored in Dropbox with a timeout mechanism.
+        # This function continuously attempts to retrieve the file URL until it 
+        # becomes available in Dropbox, up to a specified maximum wait time.
+        #
+        # @param path [String] The path to the file in Dropbox.
+        # @param max_wait [Integer] Maximum time to wait (in seconds) for the file to 
+        #                            appear in Dropbox. Default is 30 seconds.
+        # @param interval [Integer] Time interval (in seconds) between each retry 
+        #                            attempt. Default is 2 seconds.
+        #
+        # @return [String] The URL of the file in Dropbox, with the `&dl=1` parameter 
+        #                  replaced by `&dl=0`.
+        # @raise [RuntimeError] If the file is not available within the specified 
+        #                       maximum wait time, raises an error with a timeout message.
+        #
+        # @example
+        #   wait_for_dropbox_url('/path/to/file', max_wait: 60, interval: 3)
+        #   # => "https://www.dropbox.com/s/yourfile?dl=0"
+        #
+        def wait_for_dropbox_url(path, max_wait: 30, interval: 2)
+            start_time = Time.now
+          
+            loop do
+                begin
+                    # Try to get the file URL
+                    return BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
+                rescue => e
+                    # Check if the timeout has been exceeded
+                    if Time.now - start_time > max_wait
+                    raise "Timeout exceeded while waiting for file to appear in Dropbox: #{e.message}"
+                    end
+            
+                    # Wait for a short interval before retrying
+                    sleep(interval)
+                end
+            end
         end
 
         # download image from Selenium using JavaScript and upload to Dropbox 
@@ -274,8 +329,12 @@ module Mass
             BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
             # Delete the local file
             File.delete(tmp_path)
+
             # Return the URL of the file in Dropbox
-            BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
+            # 
+            # Add a timeout to wait the file is present in the cloud.
+            # Reference: https://github.com/MassProspecting/docs/issues/320
+            self.wait_for_dropbox_url(path).gsub('&dl=1', '&dl=0')
         end
                 
         # download image from Selenium using JavaScript and upload to Dropbox 
