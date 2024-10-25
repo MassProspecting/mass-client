@@ -235,7 +235,7 @@ module Mass
                 rescue => e
                     # Check if the timeout has been exceeded
                     if Time.now - start_time > max_wait
-                    raise "Timeout exceeded while waiting for file to appear in Dropbox: #{e.message}"
+                    raise "Timeout exceeded while waiting for Dropbox file (#{path}): #{e.message}"
                     end
             
                     # Wait for a short interval before retrying
