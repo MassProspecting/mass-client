@@ -327,7 +327,11 @@ module Mass
             BlackStack::DropBox.dropbox_create_folder(folder)
             
             # Upload the file to Dropbox
-            BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
+            s = BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
+            json = JSON.parse(s)
+            if json['is_downloadable'].nil? || !json['is_downloadable']
+                raise "Dropbox file upload failed. Dropbox response: #{s}"
+            end
             # Delete the local file
             File.delete(tmp_path)
 
