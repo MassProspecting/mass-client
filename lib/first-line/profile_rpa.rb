@@ -218,14 +218,14 @@ module Mass
         #
         # @return [String] The URL of the file in Dropbox, with the `&dl=1` parameter 
         #                  replaced by `&dl=0`.
-        # @raise [RuntimeError] If the file is not available within the specified 
+        # @return nil If the file is not available within the specified 
         #                       maximum wait time, raises an error with a timeout message.
         #
         # @example
         #   wait_for_dropbox_url('/path/to/file', max_wait: 60, interval: 3)
         #   # => "https://www.dropbox.com/s/yourfile?dl=0"
         #
-        def wait_for_dropbox_url(path, max_wait: 30, interval: 2)
+        def wait_for_dropbox_url(path, max_wait: 5, interval: 2)
             start_time = Time.now
           
             loop do
@@ -235,7 +235,8 @@ module Mass
                 rescue => e
                     # Check if the timeout has been exceeded
                     if Time.now - start_time > max_wait
-                        raise "Timeout exceeded while waiting for Dropbox file (#{path}): #{e.message}"
+                        #raise "Timeout exceeded while waiting for Dropbox file (#{path}): #{e.message}"
+                        return nil
                     end
             
                     # Wait for a short interval before retrying
