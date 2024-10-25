@@ -4,7 +4,7 @@ module Mass
 
         # DROPBOX LOCKFILE PARAMETERS
         LOCKFILE_PATH = '/tmp/dropbox_upload.lock' # Path to your lockfile
-        LOCK_TIMEOUT = 5 # Maximum time in seconds to wait for the lock
+        LOCK_TIMEOUT = 30 # Maximum time in seconds to wait for the lock
 
         # DROPBOX LOCKFILE FUNCTIONS
         def acquire_lock
@@ -27,6 +27,7 @@ module Mass
         end
 
         def upload_to_dropbox_with_lock(tmp_path, path)
+            s = ''
             acquire_lock
             begin
                 # Upload the file to Dropbox
@@ -36,7 +37,7 @@ module Mass
                     raise "Dropbox file upload failed. Dropbox response: #{s}"
                 end
             rescue => e
-                raise "Error during upload: #{e.message}"
+                raise "Error during upload: #{e.message} - Dropbox response: #{s}"
             ensure
                 # Always release the lock, even if an error occurs
                 release_lock
