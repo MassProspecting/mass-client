@@ -7,6 +7,7 @@ require 'simple_command_line_parser'
 require 'colorize'
 require 'timeout'
 require 'base64'
+require 'adspower-client'
 
 # mass client configuration
 module Mass

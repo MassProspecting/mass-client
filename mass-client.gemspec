@@ -47,4 +47,5 @@ Gem::Specification.new do |s|
     s.add_runtime_dependency 'colorize', '~>0.8.1'
     s.add_runtime_dependency 'simple_cloud_logging', '~> 1.2.6'
     s.add_runtime_dependency 'simple_command_line_parser', '~> 1.1.2'
+    s.add_runtime_dependency 'adspower-client', '~> 1.0.14'
 end

@@ -2,7 +2,7 @@ module Mass
     class ProfileRPA < Mass::Profile
 
         @@buffer_driver = nil
-        attr_accessor :headless
+        attr_accessor :headless, :read_timeout
 
         # SELENIUM FUNCTIONS
         def self.buffer_driver
@@ -16,6 +16,7 @@ module Mass
         def initialize(desc)
             super(desc)
             headless = true
+            read_timeout = 300 # 300 seconds - 5 minutes
         end
 
         def self.domain
@@ -304,7 +305,10 @@ module Mass
             sleep(1)
             
             if self.class.buffer_driver.nil?
-                self.class.buffer_driver = c.driver(self.desc['ads_power_id'], headless)
+                self.class.buffer_driver = c.driver2( self.desc['ads_power_id'], 
+                    headless: headless,
+                    read_timeout: read_timeout 
+                )
                 self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])
                 self.one_tab
 
