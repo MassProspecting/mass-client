@@ -4,7 +4,7 @@ module Mass
 
         # DROPBOX LOCKFILE PARAMETERS
         LOCKFILE_PATH = '/tmp/dropbox_upload.lock' # Path to your lockfile
-        LOCK_TIMEOUT = 30 # Maximum time in seconds to wait for the lock
+        LOCK_TIMEOUT = 60 # Maximum time in seconds to wait for the lock
 
         # DROPBOX LOCKFILE FUNCTIONS
         def acquire_lock
@@ -28,7 +28,7 @@ module Mass
 
         def upload_to_dropbox_with_lock(tmp_path, path)
             s = ''
-            acquire_lock
+            # acquire_lock # https://github.com/MassProspecting/docs/issues/320 - I started getting error "Timeout while waiting for lockfile." very often.
             begin
                 # Upload the file to Dropbox
                 s = BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
