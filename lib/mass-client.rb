@@ -14,6 +14,12 @@ module Mass
     @@js_path
     @@drownload_path
     @@api_client
+    
+    @@s3_bucket
+    @@s3_region
+    @@s3_access_key_id
+    @@s3_secret_access_key
+    @@s3
 
     # set the MassProspecting API client
     #
@@ -21,21 +27,33 @@ module Mass
     #
     # api_key: Mandatory. The API key of your MassProspecting account.
     # subaccount: Optional. The name of the subaccount you want to work with. If you provide a subaccount, the SDK will call the master to get the URL and port of the subaccount. Default is nil.
+    # 
     # api_url: Optional. The URL of the MassProspecting API. Default is 'https://massprospecting.com'.
     # api_port: Optional. The port of the MassProspecting API. Default is 443.
     # api_version: Optional. The version of the MassProspecting API. Default is '1.0'.
+    #
     # backtrace: Optional. If true, the backtrace of the exceptions will be returned by the access points. If false, only an error description is returned. Default is false.
+    # 
     # js_path: Optional. The path to the JavaScript file to be used by the SDK. Default is nil.
     # download_path: Optional. The path to the download folder(s) to be used by the SDK. Default is [].
+
     def self.set(
         api_key: ,
         subaccount: nil,
+
         api_url: 'https://massprospecting.com', 
         api_port: 443,
         api_version: '1.0',
+
         backtrace: false,
+
         js_path: nil, 
-        download_path: []
+        download_path: [],
+
+        s3_region: nil,
+        s3_access_key_id: nil,
+        s3_secret_access_key: nil,
+        s3_bucket: nil
     )
         # call the master to get the URL and port of the subaccount.
         BlackStack::API.set_client(
@@ -78,6 +96,25 @@ module Mass
 
         @@js_path = js_path
         @@download_path = download_path
+
+        @@s3_region = s3_region
+        @@s3_access_key_id = s3_access_key_id
+        @@s3_secret_access_key = s3_secret_access_key
+        @@s3_bucket = s3_bucket
+
+        # Initialize the S3 client
+        if (
+            @@s3_region
+            @@s3_access_key_id
+            @@s3_secret_access_key
+            @@s3_bucket
+        )
+            @@s3 = Aws::S3::Client.new(
+                region: @@s3_region,
+                access_key_id: @@s3_access_key_id,
+                secret_access_key: @@s3_secret_access_key
+            )
+        end
     end
 
     def self.download_path
@@ -87,6 +124,27 @@ module Mass
     def self.js_path
         @@js_path
     end
+
+    def self.s3_region
+        @@s3_region
+    end
+
+    def self.s3_access_key_id
+        @@s3_access_key_id
+    end
+
+    def self.s3_secret_access_key
+        @@s3_secret_access_key
+    end
+
+    def self.s3_bucket
+        @@s3_bucket
+    end
+
+    def self.s3
+        @@s3
+    end
+
 end # module Mass
 
 # base classes

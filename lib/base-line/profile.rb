@@ -26,22 +26,27 @@ module Mass
             File.delete(LOCKFILE_PATH) if File.exist?(LOCKFILE_PATH)
         end
 
-        def upload_to_dropbox_with_lock(tmp_path, path)
-            s = ''
-            # acquire_lock # https://github.com/MassProspecting/docs/issues/320 - I started getting error "Timeout while waiting for lockfile." very often.
-            begin
-                # Upload the file to Dropbox
-                s = BlackStack::DropBox.dropbox_upload_file(tmp_path, path)
-                json = JSON.parse(s)
-                if json['is_downloadable'].nil? || !json['is_downloadable']
-                    raise "Dropbox file upload failed. Dropbox response: #{s}"
-                end
-            rescue => e
-                raise "Error during upload: #{e.message} - Dropbox response: #{s}"
-            ensure
-                # Always release the lock, even if an error occurs
-                release_lock
-            end
+        # Function to upload a file to Amazon S3 and get its public URL
+        def upload_file_to_s3(file_path, s3_key)
+            # Upload the file
+            Mass.s3.put_object(
+                bucket: Mass.aws_bucket_name, 
+                key: Mass.aws_s3_key, 
+                body: File.open(file_path)
+            )
+            # Generate the public URL
+            public_url = "https://#{Mass.aws_bucket_name}.s3.amazonaws.com/#{Mass.aws_s3_key}"
+            # return
+            return public_url
+        end
+  
+        # Function to create a folder in S3
+        def create_s3_folder(folder_name)
+            Mass.s3.put_object(
+                bucket: Mass.aws_bucket_name, 
+                key: "#{folder_name}/"
+            )
+            return true
         end
 
         #
@@ -127,10 +132,10 @@ module Mass
             month = Time.now.month.to_s.rjust(2, '0')
             folder = "/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
-            BlackStack::DropBox.dropbox_create_folder(folder)
+            create_s3_folder(folder)
 
             # Upload the file to Dropbox
-            upload_to_dropbox_with_lock(tmp_path, path)
+            ret = upload_file_to_s3(tmp_path, path)
 
             # Delete the local file
             File.delete(tmp_path)
@@ -139,7 +144,7 @@ module Mass
             # 
             # Add a timeout to wait the file is present in the cloud.
             # Reference: https://github.com/MassProspecting/docs/issues/320
-            self.wait_for_dropbox_url(path).gsub('&dl=1', '&dl=0')
+            ret
         end
                 
         # download image from Selenium using JavaScript and upload to Dropbox 

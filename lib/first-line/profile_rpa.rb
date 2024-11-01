@@ -208,46 +208,6 @@ module Mass
             raise "Downloaded file not found in paths #{file_paths.join(',')} after #{timeout} seconds."
         end
 
-
-        # Retrieves the URL of a file stored in Dropbox with a timeout mechanism.
-        # This function continuously attempts to retrieve the file URL until it 
-        # becomes available in Dropbox, up to a specified maximum wait time.
-        #
-        # @param path [String] The path to the file in Dropbox.
-        # @param max_wait [Integer] Maximum time to wait (in seconds) for the file to 
-        #                            appear in Dropbox. Default is 30 seconds.
-        # @param interval [Integer] Time interval (in seconds) between each retry 
-        #                            attempt. Default is 2 seconds.
-        #
-        # @return [String] The URL of the file in Dropbox, with the `&dl=1` parameter 
-        #                  replaced by `&dl=0`.
-        # @return nil If the file is not available within the specified 
-        #                       maximum wait time, raises an error with a timeout message.
-        #
-        # @example
-        #   wait_for_dropbox_url('/path/to/file', max_wait: 60, interval: 3)
-        #   # => "https://www.dropbox.com/s/yourfile?dl=0"
-        #
-        def wait_for_dropbox_url(path, max_wait: 5, interval: 2)
-            start_time = Time.now
-          
-            loop do
-                begin
-                    # Try to get the file URL
-                    return BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
-                rescue => e
-                    # Check if the timeout has been exceeded
-                    if Time.now - start_time > max_wait
-                        #raise "Timeout exceeded while waiting for Dropbox file (#{path}): #{e.message}"
-                        return nil
-                    end
-            
-                    # Wait for a short interval before retrying
-                    sleep(interval)
-                end
-            end
-        end
-
         # take screenshot and upload it to dropbox
         # return the URL of the screenshot
         def screenshot(dropbox_folder=nil)
@@ -264,10 +224,10 @@ module Mass
             month = Time.now.month.to_s.rjust(2,'0')
             folder = "/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
-            BlackStack::DropBox.dropbox_create_folder(folder)
-            upload_to_dropbox_with_lock(tmp_path, path)
+            create_s3_folder(folder)
+            ret = upload_file_to_s3(tmp_path, path)
             File.delete(tmp_path)
-            BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
+            ret
         end # def screenshot
 
         # create a file in the cloud with the HTML of the current page
@@ -286,10 +246,10 @@ module Mass
             month = Time.now.month.to_s.rjust(2,'0')
             folder = "/massprospecting.bots/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
-            BlackStack::DropBox.dropbox_create_folder(folder)
-            upload_to_dropbox_with_lock(tmp_path, path)
+            create_s3_folder(folder)
+            ret = upload_file_to_s3(tmp_path, path)
             File.delete(tmp_path)
-            BlackStack::DropBox.get_file_url(path).gsub('&dl=1', '&dl=0')
+            ret
         end # def snapshot
 
         # return a selnium driver for this profile
