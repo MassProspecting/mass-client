@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.27'
-    s.date        = '2024-10-30'
+    s.version     = '1.0.28'
+    s.date        = '2024-11-01'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
     s.authors     = ["Leandro Daniel Sardi"]
