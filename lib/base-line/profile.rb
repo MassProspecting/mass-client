@@ -30,12 +30,12 @@ module Mass
         def upload_file_to_s3(file_path, s3_key)
             # Upload the file
             Mass.s3.put_object(
-                bucket: Mass.aws_bucket_name, 
-                key: Mass.aws_s3_key, 
+                bucket: Mass.s3_bucket, 
+                key: s3_key, 
                 body: File.open(file_path)
             )
             # Generate the public URL
-            public_url = "https://#{Mass.aws_bucket_name}.s3.amazonaws.com/#{Mass.aws_s3_key}"
+            public_url = "https://#{Mass.s3_bucket}.s3.amazonaws.com/#{s3_key}"
             # return
             return public_url
         end
@@ -43,7 +43,7 @@ module Mass
         # Function to create a folder in S3
         def create_s3_folder(folder_name)
             Mass.s3.put_object(
-                bucket: Mass.aws_bucket_name, 
+                bucket: Mass.s3_bucket, 
                 key: "#{folder_name}/"
             )
             return true
@@ -130,7 +130,7 @@ module Mass
             # Proceed with Dropbox operations
             year = Time.now.year.to_s.rjust(4, '0')
             month = Time.now.month.to_s.rjust(2, '0')
-            folder = "/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
+            folder = dropbox_folder #"/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
             create_s3_folder(folder)
 

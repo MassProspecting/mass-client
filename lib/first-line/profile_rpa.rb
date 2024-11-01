@@ -222,7 +222,7 @@ module Mass
             # code
             year = Time.now.year.to_s.rjust(4,'0')
             month = Time.now.month.to_s.rjust(2,'0')
-            folder = "/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
+            folder = dropbox_folder #"/massprospecting.rpa/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
             create_s3_folder(folder)
             ret = upload_file_to_s3(tmp_path, path)
@@ -244,7 +244,7 @@ module Mass
             # code
             year = Time.now.year.to_s.rjust(4,'0')
             month = Time.now.month.to_s.rjust(2,'0')
-            folder = "/massprospecting.bots/#{dropbox_folder}.#{year}.#{month}"
+            folder = dropbox_folder #"/massprospecting.bots/#{dropbox_folder}.#{year}.#{month}"
             path = "#{folder}/#{filename}"
             create_s3_folder(folder)
             ret = upload_file_to_s3(tmp_path, path)

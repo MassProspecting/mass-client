@@ -8,6 +8,7 @@ require 'colorize'
 require 'timeout'
 require 'base64'
 require 'adspower-client'
+require 'aws-sdk-s3' # Ensure the AWS SDK for S3 is installed
 
 # mass client configuration
 module Mass
