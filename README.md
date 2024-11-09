@@ -50,7 +50,7 @@ gem install mass-client
 
 ### 1.2. Setup the Client
 
-1. Follow the steps in [this article](https://github.com/MassProspecting/docs/blob/main/api/1-getting-api-key.md) and get your MassProspecting API key.
+1. Follow the steps in [this article](https://github.com/MassProspecting/docs/blob/main/api/01-getting-api-key.md) and get your MassProspecting API key.
 
 2. Setup your MassProspecting client.
 
