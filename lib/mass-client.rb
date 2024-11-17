@@ -37,7 +37,9 @@ module Mass
     # 
     # js_path: Optional. The path to the JavaScript file to be used by the SDK. Default is nil.
     # download_path: Optional. The path to the download folder(s) to be used by the SDK. Default is [].
-
+    #
+    # s3_region, s3_access_key_id, s3_secret_access_key, s3_bucket: Defining AWS S3 parameter for storing files at the client-side.
+    #
     def self.set(
         api_key: ,
         subaccount: nil,

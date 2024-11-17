@@ -59,6 +59,7 @@ require 'mass-client'
 
 Mass.set(
     api_key: '4db9d88c-dee9-****-8d36-********',
+    subaccount: 'my-first-agency-client'
 )
 ```
 
@@ -349,13 +350,11 @@ The **mass-client** accepts some custom configurations.
 **Example:**
 
 ```ruby
+require 'mass-client'
+
 Mass.set(
-    # mandatory parameters
-    api_key: '4cb865f4-fa4f-4c2f-8456-d366de44e13a',
-    subaccount: 'MassProspecting',
-    # connect to development environment
-    api_url: 'http://127.0.0.1', 
-    api_port: 3000,
+    api_key: '4db9d88c-dee9-****-8d36-********',
+    subaccount: 'my-first-agency-client'
     # optional parameters
     backtrace: true,
 )
@@ -363,13 +362,17 @@ Mass.set(
 
 Here the full list of the parameters supported:
 
-| Parameter      | Type            | Mandatory | Default Value                     | Description                                                                                           |
-|----------------|-----------------|-----------|-----------------------------------|-------------------------------------------------------------------------------------------------------|
-| `api_key`      | `String`        | Yes       | N/A                               | The API key of your MassProspecting account.                                                           |
-| `subaccount`   | `String`        | Yes       | N/A                               | The name of the subaccount you want to work with.                                                      |
-| `api_url`      | `String`        | No        | `'https://massprospecting.com'`    | The URL of the MassProspecting API.                                                                    |
-| `api_port`     | `Integer`       | No        | `443`                             | The port of the MassProspecting API.                                                                   |
-| `api_version`  | `String`        | No        | `'1.0'`                           | The version of the MassProspecting API.                                                                |
-| `backtrace`    | `Boolean`       | No        | `false`                           | If `true`, the backtrace of the exceptions will be returned. If `false`, only an error description is returned. |
-| `js_path`      | `String, nil`   | No        | `nil`                             | The path to the JavaScript file to be used by the SDK.                                                 |
-| `download_path`| `String, Array` | No        | `[]`                              | The path to the download folder(s) to be used by the SDK. Must be a string or an array of strings.     |
+| Parameter              | Type               | Description                                                                                     | Default Value                 |
+|------------------------|--------------------|-------------------------------------------------------------------------------------------------|-------------------------------|
+| `api_key`              | String             | The API key of your MassProspecting account.                                                    | Required                      |
+| `subaccount`           | String (Optional)  | The name of the subaccount you want to work with.                                               | `nil`                         |
+| `api_url`              | String (Optional)  | The URL of the MassProspecting API.                                                             | `'https://massprospecting.com'` |
+| `api_port`             | Integer (Optional) | The port of the MassProspecting API.                                                            | `443`                         |
+| `api_version`          | String (Optional)  | The version of the MassProspecting API.                                                         | `'1.0'`                       |
+| `backtrace`            | Boolean (Optional) | If true, the backtrace of the exceptions will be returned by the access points. If false, only an error description is returned. | `false`                       |
+| `js_path`              | String (Optional)  | The path to the JavaScript file to be used by the SDK.                                          | `nil`                         |
+| `download_path`        | String or Array (Optional) | The path to the download folder(s) to be used by the SDK.                                       | `[]`                          |
+| `s3_region`            | String (Optional)  | The AWS S3 region for storing files at the client-side.                                         | `nil`                         |
+| `s3_access_key_id`     | String (Optional)  | The AWS S3 access key ID.                                                                       | `nil`                         |
+| `s3_secret_access_key` | String (Optional)  | The AWS S3 secret access key.                                                                   | `nil`                         |
+| `s3_bucket`            | String (Optional)  | The AWS S3 bucket name.                                                                         | `nil`                         |
