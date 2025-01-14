@@ -210,7 +210,7 @@ module Mass
 
         # take screenshot and upload it to dropbox
         # return the URL of the screenshot
-        def screenshot(dropbox_folder=nil)
+        def screenshot(dropbox_folder=nil, s3_optimization: true)
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
             # parameters
@@ -219,6 +219,16 @@ module Mass
             tmp_path = "/tmp/#{filename}"
             # take screenshot using selenium driver and save it into the /tmp folder
             self.driver.save_screenshot(tmp_path)
+            # AWS/S3 optimization - Reduce the resolution of the screenshot
+            # Reference: https://github.com/MassProspecting/docs/issues/368
+            if s3_optimization
+                image = MiniMagick::Image.open(tmp_path)
+                image.format "jpeg"
+                image.strip  # Remove all profiles and comments
+                image.quality "50" # Apply compression quality setting (for JPEG)
+                image_ret = image.quality "10" # reduce the file size as well by compressing the image
+                image.write(tmp_path)
+            end # s3_optimization
             # code
             year = Time.now.year.to_s.rjust(4,'0')
             month = Time.now.month.to_s.rjust(2,'0')

@@ -9,6 +9,7 @@ require 'timeout'
 require 'base64'
 require 'adspower-client'
 require 'aws-sdk-s3' # Ensure the AWS SDK for S3 is installed
+require 'mini_magick' # https://github.com/MassProspecting/docs/issues/368
 
 # mass client configuration
 module Mass
