@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.28'
-    s.date        = '2024-11-01'
+    s.version     = '1.0.29'
+    s.date        = '2025-01-14'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
     s.authors     = ["Leandro Daniel Sardi"]
@@ -49,4 +49,5 @@ Gem::Specification.new do |s|
     s.add_runtime_dependency 'simple_command_line_parser', '~> 1.1.2'
     s.add_runtime_dependency 'adspower-client', '~> 1.0.14'
     s.add_runtime_dependency 'aws-sdk-s3', '~> 1.169.0'
+    s.add_runtime_dependency 'mini_magick', '~> 5.1.0'
 end
