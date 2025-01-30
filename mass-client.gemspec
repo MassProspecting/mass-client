@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.30'
+    s.version     = '1.0.31'
     s.date        = '2025-01-24'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
     s.add_runtime_dependency 'uri', '~> 0.11.2'
     s.add_runtime_dependency 'net-http', '~> 0.2.0'
     s.add_runtime_dependency 'json', '~> 2.6.3'
-    s.add_runtime_dependency 'blackstack-core', '~> 1.2.20'
+    s.add_runtime_dependency 'blackstack-core', '~> 1.2.30'
     s.add_runtime_dependency 'colorize', '~>0.8.1'
     s.add_runtime_dependency 'simple_cloud_logging', '~> 1.2.6'
     s.add_runtime_dependency 'simple_command_line_parser', '~> 1.1.2'
