@@ -60,7 +60,7 @@ module Mass
         # - url: Internet address of the image to download from the website and upload to dropbox.
         # - dropbox_folder: Dropbox folder name to store the image.
         #                
-        def download_image_0(url, dropbox_folder = nil)
+        def download_image_0(url, dropbox_folder = nil, s3_optimization: true)
             raise "Either dropbox_folder parameter or self.desc['id_account'] are required." if dropbox_folder.nil? && self.desc['id_account'].nil?
             dropbox_folder = self.desc['id_account'] if dropbox_folder.nil?
             
@@ -127,6 +127,17 @@ module Mass
                 file.write(Base64.decode64(image_data))
             end
             
+            # AWS/S3 optimization - Reduce the resolution of the screenshot
+            # Reference: https://github.com/MassProspecting/docs/issues/368
+            if s3_optimization
+                image = MiniMagick::Image.open(tmp_path)
+                image.format "jpeg"
+                image.strip  # Remove all profiles and comments
+                image.quality "50" # Apply compression quality setting (for JPEG)
+                image_ret = image.quality "10" # reduce the file size as well by compressing the image
+                image.write(tmp_path)
+            end # s3_optimization
+
             # Proceed with Dropbox operations
             year = Time.now.year.to_s.rjust(4, '0')
             month = Time.now.month.to_s.rjust(2, '0')

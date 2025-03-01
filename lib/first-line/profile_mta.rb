@@ -38,7 +38,7 @@ module Mass
             t = self.type
             sources = [
                 {:folder=>p.desc['inbox_label'] || t.desc['default_inbox_label'], :track_field=>'imap_inbox_last_id'}, 
-                #{:folder=>p.desc['spam_label'] || t.desc['default_inbox_label'], :track_field=>'imap_spam_last_id'},
+                {:folder=>p.desc['spam_label'] || t.desc['default_spam_label'], :track_field=>'imap_spam_last_id'},
             ]
 
             # connecting imap 
@@ -62,11 +62,15 @@ module Mass
                     l.logs "Examine folder... "
                     res = imap.examine(folder)
                     l.logf "done (#{res.name})"
-            
+
                     # Gettin latest `limit` messages received, in descendent order (newer first), 
                     # in order to stop when I find the latest procesed before.
                     l.logs "Getting latest #{limit.to_s} messages... "
-                    ids = imap.search(["SUBJECT", p.desc['search_all_wildcard']]).reverse[0..limit]
+                    if p.desc['search_all_wildcard'] == 'ALL'
+                        ids = imap.search([p.desc['search_all_wildcard']]).reverse[0..limit]  
+                    else
+                        ids = imap.search(["SUBJECT", p.desc['search_all_wildcard']]).reverse[0..limit]
+                    end
                     l.logf "done (#{ids.size.to_s} messages)"
 
                     # iterate the messages
