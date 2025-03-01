@@ -164,6 +164,7 @@ require_relative './/base-line/headcount'
 require_relative './/base-line/industry'
 require_relative './/base-line/location'
 require_relative './/base-line/revenue'
+require_relative './/base-line/ai_agent'
 require_relative './/base-line/tag'
 require_relative './/base-line/profile'
 
