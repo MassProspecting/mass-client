@@ -1,12 +1,13 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.33'
+    s.version     = '1.0.34'
     s.date        = '2025-02-28'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
     s.authors     = ["Leandro Daniel Sardi"]
     s.email       = 'leandro@massprospecting.com'
     s.files       = [
+      'lib/base-line/ai_agent.rb',
       'lib/base-line/channel.rb',
       'lib/base-line/company.rb',
       'lib/base-line/connectioncheck.rb',
