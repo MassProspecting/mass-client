@@ -86,7 +86,7 @@ module Mass
         end
 
         # scroll down the page until N event elements are showed up
-        def show_up_event_elements(job:, event_limit:, max_scrolls:, logger:nil)
+        def show_up_event_elements(job:, event_limit:, max_scrolls:, take_screenshots: false, logger:nil)
               l = logger || BlackStack::DummyLogger.new(nil)
               driver = job.profile.driver
               # scroll down
@@ -111,10 +111,17 @@ module Mass
                 sleep(5)
                 l.logf "done".green
 
+                # Save money - Disable jobs screenshots
+                # https://github.com/MassProspecting/docs/issues/494
+                #
                 # screenshot
                 l.logs 'Screenshot... '
-                job.desc['screenshots'] << job.profile.screenshot if job.profile.desc['allow_browser_to_download_multiple_files']
-                l.logf 'done'.green + " (#{job.desc['screenshots'].size.to_s.blue} total)"
+                if take_screenshots
+                    job.desc['screenshots'] << job.profile.screenshot if job.profile.desc['allow_browser_to_download_multiple_files']
+                    l.logf 'done'.green + " (#{job.desc['screenshots'].size.to_s.blue} total)"
+                else
+                    l.no
+                end
               end
         end
 
