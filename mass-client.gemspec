@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.35'
-    s.date        = '2025-03-07'
+    s.version     = '1.0.36'
+    s.date        = '2025-04-19'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
     s.authors     = ["Leandro Daniel Sardi"]
@@ -40,7 +40,7 @@ Gem::Specification.new do |s|
     s.homepage    = 'https://github.com/massprospecting/mass-client'
     s.license     = 'MIT'
     s.add_runtime_dependency 'timeout', '~> 0.4.1'
-    s.add_runtime_dependency 'base64', '~> 0.1.1'
+    s.add_runtime_dependency 'base64', '~> 0.2.0'
     s.add_runtime_dependency 'uri', '~> 0.11.2'
     s.add_runtime_dependency 'net-http', '~> 0.2.0'
     s.add_runtime_dependency 'json', '~> 2.6.3'
