@@ -288,14 +288,9 @@ module Mass
                         Selenium::WebDriver::Error::NoSuchWindowError,
                         Selenium::WebDriver::Error::WebDriverError => e
 
-                    self.class.buffer_driver = c.driver2( self.desc['ads_power_id'], 
-                        headless: headless,
-                        read_timeout: read_timeout 
-                    )
-
                     # preferred: ask AdsPower to stop the remote browser session
                     begin
-                        client.stop(self.desc['ads_power_id'])
+                        c.stop(self.desc['ads_power_id'])
                     rescue => stop_err
                         #warn "client.stop failed: #{stop_err.class}: #{stop_err.message}"
                         # fallback: best-effort local cleanup of cached driver object
@@ -306,7 +301,7 @@ module Mass
                     sleep 1
 
                     # re-attach / re-create driver and retry once
-                    driver = client.driver2(self.desc['ads_power_id'], headless: false)
+                    driver = c.driver2(self.desc['ads_power_id'], headless: false)
 
                     self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])                    
                 end
