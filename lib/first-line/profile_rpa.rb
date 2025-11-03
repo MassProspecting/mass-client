@@ -279,7 +279,38 @@ module Mass
                     headless: headless,
                     read_timeout: read_timeout 
                 )
-                self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])
+
+                # this exception-catch is because of the glitch: https://github.com/massprospecting/hub/issues/20
+                begin
+                    self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])
+                rescue  Errno::ECONNREFUSED,
+                        Selenium::WebDriver::Error::InvalidSessionIdError,
+                        Selenium::WebDriver::Error::NoSuchWindowError,
+                        Selenium::WebDriver::Error::WebDriverError => e
+
+                    self.class.buffer_driver = c.driver2( self.desc['ads_power_id'], 
+                        headless: headless,
+                        read_timeout: read_timeout 
+                    )
+
+                    # preferred: ask AdsPower to stop the remote browser session
+                    begin
+                        client.stop(self.desc['ads_power_id'])
+                    rescue => stop_err
+                        #warn "client.stop failed: #{stop_err.class}: #{stop_err.message}"
+                        # fallback: best-effort local cleanup of cached driver object
+                        AdsPowerClient.cleanup(self.desc['ads_power_id'])
+                    end
+
+                    # let sockets/ports free
+                    sleep 1
+
+                    # re-attach / re-create driver and retry once
+                    driver = client.driver2(self.desc['ads_power_id'], headless: false)
+
+                    self.class.buffer_driver.manage.window.resize_to(self.desc['browser_width'], self.desc['browser_height'])                    
+                end
+
                 self.one_tab
 
                 #if self.desc['allow_browser_to_download_multiple_files']
@@ -294,7 +325,6 @@ module Mass
                 js1 = Net::HTTP.get(uri)
                 #l.logf "done".green
                 
-
                 # call ls command to get array of files in the folder
                 # iterate all the *.js files inside the folder $RUBYLIB/extensions/mass.subaccount/js
                 js2 = ''
