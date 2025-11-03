@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
     s.name        = 'mass-client'
-    s.version     = '1.0.36'
-    s.date        = '2025-04-19'
+    s.version     = '1.0.37'
+    s.date        = '2025-11-03'
     s.summary     = "Ruby library for MassProspecting API."
     s.description = "Ruby library for MassProspecting API."
     s.authors     = ["Leandro Daniel Sardi"]
@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
     s.add_runtime_dependency 'colorize', '~>0.8.1'
     s.add_runtime_dependency 'simple_cloud_logging', '~> 1.2.6'
     s.add_runtime_dependency 'simple_command_line_parser', '~> 1.1.2'
-    s.add_runtime_dependency 'adspower-client', '~> 1.0.14'
+    s.add_runtime_dependency 'adspower-client', '~> 1.0.19'
     s.add_runtime_dependency 'aws-sdk-s3', '~> 1.169.0'
     s.add_runtime_dependency 'mini_magick', '~> 5.1.0'
 end
